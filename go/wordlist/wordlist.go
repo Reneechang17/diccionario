@@ -27,12 +27,13 @@ func New(filename string) WordList {
 // AddWord persists a new word to the existing list.
 func (w *wordListImpl) AddWord(word string) (err error) {
 	var f *os.File
-	if f, err = os.OpenFile(w.filename, os.O_APPEND, 0644); err != nil {
+	// add permission to r/w
+	if f, err = os.OpenFile(w.filename, os.O_APPEND | os.O_WRONLY | os.O_CREATE, 0644); err != nil {
 		return
 	}
 	defer f.Close()
 
-	if _, err = f.Write([]byte(word)); err != nil {
+	if _, err = f.Write([]byte(word + "\n")); err != nil {
 		return
 	}
 
