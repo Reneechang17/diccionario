@@ -20,17 +20,29 @@ func (s *Server) WordExists(c *gin.Context) {
 
 	wordlist, err := s.w.GetWords()
 	if err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		// read file err should be 5xx response
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read wordlist"})
 		return
 	}
 
-	resp := ExistsResponse{Exists: false}
+	// resp := ExistsResponse{Exists: false}
+
+	// for _, w := range wordlist {
+	// 	// 
+	// 	if strings.HasPrefix(w, word) {
+	// 		resp.Exists = true
+	// 	}
+	// }
+
+	target := strings.ToLower(word)
+	exists := false
 
 	for _, w := range wordlist {
-		if strings.HasPrefix(w, word) {
-			resp.Exists = true
+		if strings.ToLower(strings.TrimSpace(w)) == target {
+			exists = true
+			break
 		}
 	}
 
-	c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusOK, ExistsResponse {Exists: exists})
 }
