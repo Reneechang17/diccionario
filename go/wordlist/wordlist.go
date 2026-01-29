@@ -50,14 +50,17 @@ func (w *wordListImpl) GetWords() (words []string, err error) {
 
 	r := bufio.NewReader(f)
 
-	for i := 0; i < 100000; i++ {
+	// remove the loop limitation
+	// to check the new adding word
+	for {
 		var s string
 		if s, err = r.ReadString('\n'); err != nil {
-			return
+			break
 		}
 
 		words = append(words, strings.TrimSpace(s))
 	}
 
+	err = nil // clearup err
 	return
 }
